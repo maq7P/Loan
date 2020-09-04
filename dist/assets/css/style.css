@@ -1291,7 +1291,9 @@ a:active {
     -webkit-transform: translateX(-45%) translateY(-50%);
     transform: translateX(-45%) translateY(-50%)
 }
-
+.feed-slider__items{
+    height: 430px;
+}
 .feed__item {
     width: 241px;
     min-height: 341px;

@@ -1,10 +1,9 @@
-export default class Slider{
-    constructor(page, btns){
-        this.page = document.querySelector(page);
-        this.slides = this.page.children;
-        this.btns = document.querySelectorAll(btns);
-        this.slideIndex = 1;
-    }  
+import Slider from './slider';
+
+export default class MainSlider extends Slider{
+    constructor(btns){
+        super(btns)
+    }
 
     initSlides(n) {
         this.slides.forEach(slide => {
@@ -14,34 +13,34 @@ export default class Slider{
         });
         this.slides[n - 1].style.display = 'block';
         this.slides[n - 1].classList.add('fadeIn');
-        try{
+        try {
             if (n === 3) {
                 this.hanson.classList.add('animated');
                 setTimeout(() => {
                     this.hanson.style.opacity = '1';
                     this.hanson.classList.add('fadeInUp')
                 }, 3000);
-            } else{
+            } else {
                 this.hanson.style.opacity = '0';
                 this.hanson.classList.remove('fadeInUp')
             }
-        } catch(e){}
+        } catch (e) {}
 
     }
 
-    checkSlide(n){
+    checkSlide(n) {
         if (n < 1) {
             this.slideIndex = this.slides.length
-        } 
+        }
         if (n > this.slides.length) {
             this.slideIndex = 1;
         }
     }
 
     render() {
-        try{
+        try {
             this.hanson = document.querySelector('.hanson');
-        } catch(e){}
+        } catch (e) {}
 
         this.btns.forEach(btn => {
             btn.addEventListener('click', () => {
