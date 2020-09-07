@@ -3,9 +3,11 @@ import Slider from './slider';
 export default class MiniSlider extends Slider {
     constructor(container, next, prev, activeClass, animate) {
         super(container, next, prev, prev, activeClass, animate)
-        if (this.container.classList.contains('feed__slider')) {
-            this.slides = document.querySelectorAll('.feed__item');
-        }
+        try{
+            if (this.container.classList.contains('feed__slider')) {
+                this.slides = document.querySelectorAll('.feed__item');
+            }
+        } catch(e){}
     }
     decorizeSlides() {
         this.slides.forEach(slide => {
@@ -52,32 +54,34 @@ export default class MiniSlider extends Slider {
 
 
     init(){
-        this.container.style.cssText = `
+        try{
+            this.container.style.cssText = `
             display: flex;
             flex-wrap: wrap;
             align-items: flex-start;
             overflow: hidden;
         `;
-        this.bindTriggers();
-        this.decorizeSlides();
+            this.bindTriggers();
+            this.decorizeSlides();
 
-        if (this.autoplay.existence) {
-            if (!this.autoplay.time){
-                this.autoplay.time = 3000;
+            if (this.autoplay.existence) {
+                if (!this.autoplay.time) {
+                    this.autoplay.time = 3000;
+                }
+                let interval = setInterval(() => {
+                    this.nextSlide()
+                }, this.autoplay.time);
+                this.slides.forEach(slide => {
+                    slide.addEventListener('mouseover', () => {
+                        clearTimeout(interval);
+                    });
+                    slide.addEventListener('mouseout', () => {
+                        interval = setInterval(() => {
+                            this.nextSlide()
+                        }, this.autoplay.time);
+                    });
+                });
             }
-            let interval = setInterval(() => {
-                this.nextSlide()
-            }, this.autoplay.time);
-            this.slides.forEach(slide => {
-                slide.addEventListener('mouseover', () => {
-                    clearTimeout(interval);
-                });
-                slide.addEventListener('mouseout', () => {
-                    interval = setInterval(() => {
-                        this.nextSlide()
-                    }, this.autoplay.time);
-                });
-            });
-        }
+        } catch(e){}
     }
 }

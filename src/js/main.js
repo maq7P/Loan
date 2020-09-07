@@ -2,6 +2,9 @@ import MainSlider from './modules/slider/slider-main';
 import MiniSlider from './modules/slider/slider-mini';
 import videoPlayer from './modules/playVideo';
 import Diference from './modules/difference';
+import Form from './modules/forms';
+import PhoneMask from './modules/regulars/phoneMask';
+import CheckMailInputs from './modules/regulars/checkMailInputs'
 
 window.addEventListener('DOMContentLoaded', () => {
     const slider = new MainSlider({
@@ -46,4 +49,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
     new Diference('.officerold', '.officer__card-item').init();
     new Diference('.officernew', '.officer__card-item').init();
+
+    new Form('.form').init();
+
+    new PhoneMask('[name="phone"]').init();
+    new CheckMailInputs().init();
 });
