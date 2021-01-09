@@ -36,13 +36,22 @@ export default class MiniSlider extends Slider {
     }
 
     bindTriggers(){
-
-        this.next.addEventListener('click', () => {
-            this.nextSlide()
+        this.next.forEach(item => {
+            item.addEventListener('click', () => {
+                this.nextSlide()
+            });
         });
-        this.prev.addEventListener('click', () => {
-            this.prevSlide()
+        this.prev.forEach(item => {
+            item.addEventListener('click', () => {
+                this.prevSlide()
+            });
         });
+        // this.next.addEventListener('click', () => {
+        //     this.nextSlide()
+        // });
+        // this.prev.addEventListener('click', () => {
+        //     this.prevSlide()
+        // });
         if(this.btns){
             this.btns.forEach(btn => {
                 btn.addEventListener('click', () => {

@@ -1,8 +1,12 @@
+/* Description: 
+    '.hanson' - is popup block */
+
+
 import Slider from './slider';
 
 export default class MainSlider extends Slider{
-    constructor(btns){
-        super(btns)
+    constructor(btns, prev, next) {
+        super(btns, prev, next)
     }
 
     initSlides(n) {
@@ -37,24 +41,44 @@ export default class MainSlider extends Slider{
         }
     }
 
+    bindTriggers() {
+        const commonInitCounter = () => {
+            this.checkSlide(this.slideIndex += 1);
+            this.initSlides(this.slideIndex);
+        }
+        this.next.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                commonInitCounter()
+            });
+        });
+        this.prev.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                commonInitCounter();
+            });
+        });
+        this.btns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                commonInitCounter()
+            });
+        });
+
+        document.querySelectorAll('.sidecontrol > a').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.initSlides(this.slideIndex = 1);
+            });
+        })
+    }
+
     render() {
-       try{
+       if(this.container) {
             try {
                 this.hanson = document.querySelector('.hanson');
             } catch (e) {}
-
-            this.btns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    this.checkSlide(this.slideIndex += 1);
-                    this.initSlides(this.slideIndex);
-                });
-            });
-
-            document.querySelectorAll('.sidecontrol > a').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    this.initSlides(this.slideIndex = 1);
-                });
-            })
-       } catch(e){}
+            this.bindTriggers()
+       }
     }
 }

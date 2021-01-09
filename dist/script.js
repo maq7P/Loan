@@ -5198,11 +5198,18 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.addEventListener('DOMContentLoaded', function () {
-  var slider = new _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
+  var pageOneSlider = new _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
     btns: '.next',
     container: '.page'
   });
-  slider.render();
+  pageOneSlider.render();
+  var pageTwoSlider = new _modules_slider_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
+    btns: '.next',
+    container: '.moduleapp',
+    prev: '.prevmodule',
+    next: '.nextmodule'
+  });
+  pageTwoSlider.render();
   var shoupSlider = new _modules_slider_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
     container: '.showup__content-slider',
     prev: '.showup__prev',
@@ -5232,8 +5239,9 @@ window.addEventListener('DOMContentLoaded', function () {
     activeClass: 'feed__item-active'
   });
   feedSlider.init();
-  var player = new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.showup .play', '.overlay');
-  player.init();
+  new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.showup .play', '.overlay').init();
+  new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.module__video-item .play', '.overlay').init();
+  new _modules_playVideo__WEBPACK_IMPORTED_MODULE_2__["default"]('.colored .play', '.overlay').init();
   new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officerold', '.officer__card-item').init();
   new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officernew', '.officer__card-item').init();
   new _modules_forms__WEBPACK_IMPORTED_MODULE_4__["default"]('.form').init();
@@ -5482,10 +5490,18 @@ function () {
         trigger.addEventListener('click', function () {
           if (document.querySelector('iframe#frame')) {
             _this.overlay.style.display = 'flex';
-          } else {
-            var path = trigger.getAttribute('data-url');
 
-            _this.creatPlayer(path);
+            if (_this.path !== trigger.getAttribute('data-url')) {
+              _this.path = trigger.getAttribute('data-url');
+
+              _this.player.loadVideoById({
+                videoId: _this.path
+              });
+            }
+          } else {
+            _this.path = trigger.getAttribute('data-url');
+
+            _this.creatPlayer(_this.path);
           }
         });
       });
@@ -5516,19 +5532,29 @@ function () {
       this.player = new YT.Player('frame', {
         height: '100%',
         width: '100%',
-        videoId: "".concat(url)
+        videoId: "".concat(url),
+        events: {
+          'onStateChange': this.onPlayerStateChange
+        }
       });
       this.overlay.style.display = 'flex';
     }
   }, {
+    key: "onPlayerStateChange",
+    value: function onPlayerStateChange(state) {
+      var blockedElem = this.activeBtn.closest('.module__video-item').nextElementSibling;
+    }
+  }, {
     key: "init",
     value: function init() {
-      var tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      this.bindTriggers();
-      this.bindCloseBtn();
+      if (this.triggers.length > 0) {
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        this.bindTriggers();
+        this.bindCloseBtn();
+      }
     }
   }]);
 
@@ -5735,6 +5761,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
+/* Description: 
+    '.hanson' - is popup block */
 
 
 var MainSlider =
@@ -5742,10 +5770,10 @@ var MainSlider =
 function (_Slider) {
   _inherits(MainSlider, _Slider);
 
-  function MainSlider(btns) {
+  function MainSlider(btns, prev, next) {
     _classCallCheck(this, MainSlider);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(MainSlider).call(this, btns));
+    return _possibleConstructorReturn(this, _getPrototypeOf(MainSlider).call(this, btns, prev, next));
   }
 
   _createClass(MainSlider, [{
@@ -5787,28 +5815,51 @@ function (_Slider) {
       }
     }
   }, {
-    key: "render",
-    value: function render() {
+    key: "bindTriggers",
+    value: function bindTriggers() {
       var _this2 = this;
 
-      try {
+      var commonInitCounter = function commonInitCounter() {
+        _this2.checkSlide(_this2.slideIndex += 1);
+
+        _this2.initSlides(_this2.slideIndex);
+      };
+
+      this.next.forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          commonInitCounter();
+        });
+      });
+      this.prev.forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          e.stopPropagation();
+          e.preventDefault();
+          commonInitCounter();
+        });
+      });
+      this.btns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          commonInitCounter();
+        });
+      });
+      document.querySelectorAll('.sidecontrol > a').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          _this2.initSlides(_this2.slideIndex = 1);
+        });
+      });
+    }
+  }, {
+    key: "render",
+    value: function render() {
+      if (this.container) {
         try {
           this.hanson = document.querySelector('.hanson');
         } catch (e) {}
 
-        this.btns.forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            _this2.checkSlide(_this2.slideIndex += 1);
-
-            _this2.initSlides(_this2.slideIndex);
-          });
-        });
-        document.querySelectorAll('.sidecontrol > a').forEach(function (btn) {
-          btn.addEventListener('click', function () {
-            _this2.initSlides(_this2.slideIndex = 1);
-          });
-        });
-      } catch (e) {}
+        this.bindTriggers();
+      }
     }
   }]);
 
@@ -5936,12 +5987,21 @@ function (_Slider) {
     value: function bindTriggers() {
       var _this3 = this;
 
-      this.next.addEventListener('click', function () {
-        _this3.nextSlide();
+      this.next.forEach(function (item) {
+        item.addEventListener('click', function () {
+          _this3.nextSlide();
+        });
       });
-      this.prev.addEventListener('click', function () {
-        _this3.prevSlide();
-      });
+      this.prev.forEach(function (item) {
+        item.addEventListener('click', function () {
+          _this3.prevSlide();
+        });
+      }); // this.next.addEventListener('click', () => {
+      //     this.nextSlide()
+      // });
+      // this.prev.addEventListener('click', () => {
+      //     this.prevSlide()
+      // });
 
       if (this.btns) {
         this.btns.forEach(function (btn) {
@@ -6037,8 +6097,8 @@ var Slider = function Slider() {
 
   this.btns = document.querySelectorAll(btns);
   this.slideIndex = 1;
-  this.prev = document.querySelector(prev);
-  this.next = document.querySelector(next);
+  this.prev = document.querySelectorAll(prev);
+  this.next = document.querySelectorAll(next);
   this.activeClass = activeClass;
   this.animate = animate;
   this.autoplay = autoplay;

@@ -7,11 +7,20 @@ import PhoneMask from './modules/regulars/phoneMask';
 import CheckMailInputs from './modules/regulars/checkMailInputs'
 
 window.addEventListener('DOMContentLoaded', () => {
-    const slider = new MainSlider({
+    const pageOneSlider = new MainSlider({
         btns: '.next',
         container: '.page'
     });
-    slider.render();
+    pageOneSlider.render();
+
+    const pageTwoSlider = new MainSlider({
+        btns: '.next',
+        container: '.moduleapp',
+        prev: '.prevmodule',
+        next: '.nextmodule'
+    });
+    pageTwoSlider.render();
+
 
     const shoupSlider = new MiniSlider({
         container: '.showup__content-slider',
@@ -44,8 +53,9 @@ window.addEventListener('DOMContentLoaded', () => {
     });
     feedSlider.init();
 
-    const player = new videoPlayer('.showup .play', '.overlay');
-    player.init();
+    new videoPlayer('.showup .play', '.overlay').init();
+    new videoPlayer('.module__video-item .play', '.overlay').init();
+    new videoPlayer('.colored .play', '.overlay').init();
 
     new Diference('.officerold', '.officer__card-item').init();
     new Diference('.officernew', '.officer__card-item').init();

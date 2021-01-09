@@ -2,7 +2,7 @@ export default class videoPlayer{
     constructor(triggers, overlay){
         this.triggers = document.querySelectorAll(triggers);
         this.overlay = document.querySelector(overlay);
-        this.close = this.overlay.querySelector('.close')
+        this.close = this.overlay.querySelector('.close');
     }
 
     bindTriggers(){
@@ -10,9 +10,15 @@ export default class videoPlayer{
             trigger.addEventListener('click', () => {
                 if (document.querySelector('iframe#frame')) {
                     this.overlay.style.display = 'flex';
+                    if (this.path !== trigger.getAttribute('data-url')){
+                        this.path = trigger.getAttribute('data-url');
+                        this.player.loadVideoById({
+                            videoId: this.path
+                        });
+                    }
                 } else {
-                    const path = trigger.getAttribute('data-url');
-                    this.creatPlayer(path);
+                    this.path = trigger.getAttribute('data-url');
+                    this.creatPlayer(this.path);
                 }
             })
         });
@@ -39,21 +45,30 @@ export default class videoPlayer{
         this.player = new YT.Player('frame', {
             height: '100%',
             width: '100%',
-            videoId: `${url}`
+            videoId: `${url}`,
+            events: {
+                'onStateChange': this.onPlayerStateChange
+            }
         });
 
         this.overlay.style.display = 'flex';
     }
 
+    onPlayerStateChange(state){
+        const blockedElem = this.activeBtn.closest('.module__video-item').nextElementSibling;
+    }
+
 
     init(){
-        const tag = document.createElement('script');
+        if (this.triggers.length > 0){
+            const tag = document.createElement('script');
 
-        tag.src = "https://www.youtube.com/iframe_api";
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            tag.src = "https://www.youtube.com/iframe_api";
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        this.bindTriggers();
-        this.bindCloseBtn()
+            this.bindTriggers();
+            this.bindCloseBtn();
+        }
     }
 }

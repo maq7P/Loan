@@ -2066,3 +2066,32 @@ a:active {
 .hanson{
     opacity: 0;
 }
+#city option{
+    background-color: rgb(73, 74, 152);
+}
+/*#input-date::-webkit-inner-spin-button,*/
+/*#input-date::-webkit-calendar-picker-indicator {*/
+/*    display: none;*/
+/*    -webkit-appearance: none;*/
+/*}*/
+/*#input-date {*/
+/*    border: none;*/
+/*    box-sizing: border-box;*/
+/*    outline: 0;*/
+/*    padding: .75rem;*/
+/*    position: relative;*/
+/*    width: 100%;*/
+/*}*/
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: transparent;
+    bottom: 0;
+    color: transparent;
+    cursor: pointer;
+    height: auto;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: auto;
+}
